@@ -5,16 +5,21 @@
 
 
 
+
 int main(void)
 {
-    Aluno *a, *alunos, *aux=&a;
-    int tam=0,*t=&tam, mat,r;
+    Aluno *a;
+    int tam=0;
 
     
-    tamanho(t);
-    a=(Aluno*) malloc((tam+1)*sizeof(Aluno));
-    pegaLista(a,t);
-    imprimir(a,tam);
+    tamanho(&tam);
+    a=(Aluno*) malloc((tam+2)*sizeof(Aluno));
+    
+    cadastrar(&a[tam], tam, a);
+    tam++;
+    a=(Aluno*) realloc(a,(tam+2)*sizeof(Aluno));
+    cadastrar(&a[tam], tam, a);
+    salvaLista(a,tam+1);
     
     
     free(a);

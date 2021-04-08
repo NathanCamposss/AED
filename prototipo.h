@@ -68,9 +68,14 @@ int removeAluno(Aluno *a, int matricula, int tam)
     }
 
     if(cod=0)
+    {
     return SUCESSO;
+    }
     if(cod==1)
+    {
     return FALHA;
+    }
+    
 }
 
 void arrumaHorarios(Aluno *a, char mate[4])
@@ -132,16 +137,53 @@ void limpaHorario(Aluno *a)
     }
 }
 
-void cadastrar( Aluno *a)
+int procuraMatricula(Aluno a[], int tam, int matricula)
+{
+    int i;
+    for(i=0;i<tam;i++)
+    {
+        if(matricula==a[i].matricula)
+        return 1;
+    }
+    return 0;
+}
+
+int procuraNome(Aluno a[], int tam, char nome[50])
+{
+    int i;
+    for(i=0;i<tam;i++)
+    {
+        if(strcmp(nome,a[i].nome)==0)
+        return 1;
+    }
+    return 0;
+}
+void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 {
     
-    int mat,i,y;
+    int mat,i,y, r=0;
     char j[4];
     
     printf("Informe o nome completo do aluno: ");
     scanf(" %[^\n]s", a->nome);
+    r=procuraNome(a1,tam,a->nome);
+    while(r==1)
+    {
+        printf("Nome ja cadastrado, tente outro nome: ");
+        scanf(" %[^\n]s", a->nome);
+        r=procuraNome(a1,tam,a->nome);
+    }
+    r=0;
+
     printf("Informe o numero de matricula: ");
     scanf("%d", &a->matricula);
+     r=procuraMatricula(a1,tam,a->matricula);
+     while(r==1)
+    {
+        printf("Matricula ja cadastrada, tente outro numero de matricula: ");
+        scanf(" %d", &a->matricula);
+        r=procuraMatricula(a1,tam,a->matricula);
+    }
     printf("Informe em quantas das 5 materias o aluno esta cadastrado: ");
     scanf("%d", &mat);
     while(mat<1 || mat>5)
@@ -154,8 +196,7 @@ void cadastrar( Aluno *a)
     {
         strcpy(a->dis_hr.disciplina[i],"-");
     }
-
-   
+    printf("\n");
 
     for(i=0;i<mat;i++)
     {
@@ -168,6 +209,7 @@ void cadastrar( Aluno *a)
             scanf(" %s", j);
 
         }
+        printf("\n");
         strcpy(a->dis_hr.disciplina[i],j);
         arrumaHorarios(a,j);
     }
@@ -194,6 +236,7 @@ void cadastrar( Aluno *a)
 
 void arrumaMedia(Aluno *a)
 {
+    
     int i=0, r;
     double d;
     printf("Informe o numero da disciplina cuja media precisa ser modificada\n");
@@ -240,6 +283,8 @@ void tamanho(int *tam)
     FILE *f;
     char c;
     f=fopen("Alunos.txt","r");
+    if(f!=NULL)
+    {
     while(!feof(f))
     {
         c=getc(f);
@@ -248,6 +293,9 @@ void tamanho(int *tam)
             *tam=*tam+1;
         }
     }
+    }
+    else
+    *tam=0;
     fclose(f);
 }
 
@@ -384,7 +432,9 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
         }
     }
     if(cod==0)
+    {
     return FALHA;
+    }
     printf("Informe o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
     scanf("%d", &r);
     while(r<1 || r>4)
@@ -426,6 +476,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
         }
 
     }
+    
 }
 
 void consultaMedia(Aluno a)
