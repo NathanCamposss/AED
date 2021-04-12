@@ -158,10 +158,24 @@ int procuraNome(Aluno a[], int tam, char nome[50])
     }
     return 0;
 }
+
+int procuraMateria( Aluno *a, int tam, char mat[4])
+{
+    int i;
+    for(i=0;i<tam;i++)
+    {
+        if(strcmp(a->dis_hr.disciplina[i],mat)==0)
+        {
+        return 1;
+        }
+    }
+    return 0;
+
+}
 void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 {
     
-    int mat,i,y, r=0;
+    int mat,i,y, r=0, cod=1;
     char j[4];
     
     printf("Informe o nome completo do aluno: ");
@@ -197,19 +211,23 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
         strcpy(a->dis_hr.disciplina[i],"-");
     }
     printf("\n");
+    r=0;
 
     for(i=0;i<mat;i++)
     {
         
         printf("Informe qual a materia esta matriculado:\nAlgoritmo e Estrutura de Dados(AED)\nLogica Matematica(LM)\nProbabilidade e Estatistica(PE)\nArquitetura de Computadores(AC)\nAlgebra Linear(AL)\n");
         scanf(" %s", j);
-        while(strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0)
+        r=procuraMateria(a,cod,j);
+        while((strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0) || r==1)
         {
             printf("Valor invalido, tente novamente: ");
             scanf(" %s", j);
+            r=procuraMateria(a,cod,j);
 
         }
         printf("\n");
+        cod++;
         strcpy(a->dis_hr.disciplina[i],j);
         arrumaHorarios(a,j);
     }
@@ -396,6 +414,112 @@ void pegaLista(Aluno *a, int *tam)
     
 
     
+}
+
+void alteraMateria(Aluno *a, int tam)
+{
+    int matr, r, i, ind, cod, tamM=0, resp;
+    char j[4];
+    printf("Informe a matricula do aluno a qual deseja modificar a lista de materias: ");
+    scanf("%d", &matr);
+    r=procuraMatricula(a, tam, matr);
+    while(r==0)
+    {
+        printf("Matricula nao encontrada, tente novamente: ");
+        scanf("%d", &matr);
+        r=procuraMatricula(a, tam, matr);
+    }
+    for(i=0;i<tam;i++)
+    {
+        if(a[i].matricula==matr)
+        {
+            ind=i;
+            break;
+        }
+
+    }
+    printf("Informe o que deseja fazer:\n1-Alterar o cadastro de uma das disciplinas e cadastrar em outra materia\n2-Se cadastrar em uma nova materia\n");
+    scanf("%d", &cod);
+    while(cod!=2 && cod!=1)
+    {
+        printf("Operacao invalida, tente novamente: ");
+        scanf("%d", &cod);
+
+    }
+    if(cod==1)
+    {
+    printf("Escolha a materia que deseja modificar:\n");
+    for(i=0;i<5;i++)
+    {
+        if(a[ind].media[i]!=-1)
+        {
+            printf("%d - %s\n", i+1, a[ind].dis_hr.disciplina[i]);
+            tamM++;
+        }
+        
+
+    }
+    
+    scanf("%d", &resp);
+    while(resp<=0 || resp>tamM)
+    {
+        printf("Operacao invalida, tente novamente: ");
+        scanf("%d", &resp);
+
+    }
+    printf("Informe em qual a materia esta matriculado:\nAlgoritmo e Estrutura de Dados(AED)\nLogica Matematica(LM)\nProbabilidade e Estatistica(PE)\nArquitetura de Computadores(AC)\nAlgebra Linear(AL)\n");
+        scanf(" %s", j);
+        r=procuraMateria(&a[ind],tamM,j);
+        while((strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0) || r==1)
+        {
+            printf("Valor invalido, tente novamente: ");
+            scanf(" %s", j);
+            r=procuraMateria(&a[ind],tamM,j);
+
+        }
+        strcpy(a[ind].dis_hr.disciplina[resp-1], j);
+        limpaHorario(a);
+        for(i=0;i<tamM;i++)
+        {
+            arrumaHorarios(a,a[ind].dis_hr.disciplina[i]);
+        }
+        printf("Informe a media da nova materia: ");
+        scanf("%lf", &a[ind].media[resp-1]);
+    }
+    if(cod==2)
+    {
+        for(i=0;i<5;i++)
+        {
+            if(a[ind].media[i]==-1)
+            tamM++;
+        }
+        if(tamM==5)
+        {
+            printf("O aluno ja esta matriculado em todas as disciplinas, impossivel cadastrar em outra materia\n");
+            return ;
+        }
+        
+        for(i=0;i<5;i++)
+        {
+            if(a[ind].media[i]==-1)
+            {
+                printf("Informe em qual a materia esta matriculado:\nAlgoritmo e Estrutura de Dados(AED)\nLogica Matematica(LM)\nProbabilidade e Estatistica(PE)\nArquitetura de Computadores(AC)\nAlgebra Linear(AL)\n");
+                scanf(" %s", j);
+                r=procuraMateria(&a[ind],tamM,j);
+                while((strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0) || r==1)
+                {
+                    printf("Valor invalido, tente novamente: ");
+                    scanf(" %s", j);
+                    r=procuraMateria(&a[ind],tamM,j);
+
+                }
+                strcpy(a[ind].dis_hr.disciplina[tamM], j);
+                arrumaHorarios(a,a[ind].dis_hr.disciplina[tamM]);
+                break;
+
+            }
+        }
+    }
 }
 
 void imprimir(Aluno *a, int tam)
