@@ -648,3 +648,14 @@ void imprimiHorarios(Aluno a)
 
     }
 }
+
+const char *centerAlignText(char *field, unsigned int fieldWidth, const char *text){
+    if (fieldWidth == 0 || field == NULL) return "";
+
+    fieldWidth--;
+    unsigned int len = strlen(text);
+    unsigned int padding = fieldWidth > len ? (fieldWidth+1 - len)/2 : 0;
+    sprintf(field, "%*s%.*s%*s", padding, "", fieldWidth-1, text, padding>0 && len%2!=fieldWidth%2 ? padding-1 : padding, "");
+
+    return (const char *)field;
+}
