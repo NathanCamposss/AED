@@ -649,7 +649,7 @@ void imprimiHorarios(Aluno a)
     }
 }
 
-const char *centerAlignText(char *field, unsigned int fieldWidth, const char *text){
+const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *text){
     if (fieldWidth == 0 || field == NULL) return "";
 
     fieldWidth--;
