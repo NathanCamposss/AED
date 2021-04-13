@@ -45,7 +45,7 @@ int main(void)
             tamanho(&tam);
 
             a=(Aluno*) malloc((tam+2)*sizeof(Aluno));
-            al=(Aluno*) malloc((tam+2)*sizeof(Aluno));
+            al= malloc((tam+2)*sizeof(Aluno));
 
         case 1://Caso Aluno
 
@@ -94,7 +94,7 @@ int main(void)
 
                     if(comandoProfessor==1)
                     {
-                        cadastrar(&a, tam, a1[tam]);
+                        cadastrar(a, tam, a1[tam]);
                         tam++;
                     }
                     if(comandoProfessor==2)
