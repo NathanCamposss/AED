@@ -94,7 +94,7 @@ int main(void)
 
                     if(comandoProfessor==1)
                     {
-                        cadastrar(a, tam, a1[tam]);
+                        cadastrar(a[tam], tam, a);
                         tam++;
                     }
                     if(comandoProfessor==2)
