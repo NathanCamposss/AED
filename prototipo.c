@@ -7,15 +7,11 @@
 #define FALHA 0
 #define SUCESSO 1
 
+
 int main(void)
 
 {
-
-    int comandoUsuario=0;
-
-    while(comandoUsuario!=3){
-
-                char texto[] = "SISTEMA DE DADOS MATRICULAR E AVERIGUACAO DE SITUACAO ACADEMICA";
+     char texto[] = "SISTEMA DE DADOS MATRICULAR E AVERIGUACAO DE SITUACAO ACADEMICA";
                 char texto1[] = "-INSTITUTO DE EDUCACAO-";//Passar por referencia dentro da funçaõ cadastra aluno, para colocar o nome o instituto
                 char texto2[] = "BEM-VINDO";
                 char campo[76];
@@ -25,95 +21,92 @@ int main(void)
                 printf("%s\n\n", centralizarTexto(campo, sizeof campo, texto2));
                 printf("%s\n\n", centralizarTexto(campo, sizeof campo, "----------------------------------------------------"));
 
-                //INTERRFACE
 
-            printf("Escolha a opcao numerica de entrada:\n");
-            printf("1 - ENTRAR COMO DISCENTE\n");
-            printf("2 - ENTRAR COMO ADMINISTRADOR\n");
-            printf("3 - ENCERRAR SESSAO\n");
-            scanf("%d", &comandoUsuario);
+    //INTERRFACE
 
-        switch(comandoUsuario)
+    Aluno *a, *aux;
+    int tam=0, entrada, usuario, matricula, r;
+    tamanho(&tam);
+
+    a=(Aluno*) malloc((tam+2)*sizeof(Aluno));
+    pegaLista(a,&tam);
+
+    printf("ENTRAR COMO:\n1-DISCENTE\n2-ADMINISTRADOR DA PLATAFORMA\n3-SAIR\n");
+    scanf("%d", &usuario);
+
+
+    while(usuario!=3)
+    {
+        switch(usuario)
         {
-            int comandoAluno=0;
-            int comandoProfessor=0;
-            Aluno *a;
-            Aluno al[1000];
-            int tam=0;
-            int matricula=0;
+            case 1:
 
-            tamanho(&tam);
+            printf("INFORME A MATRICULA QUE DESEJA CONSULTAR: ");
 
-            a=(Aluno*) malloc((tam+2)*sizeof(Aluno));
-            al= malloc((tam+2)*sizeof(Aluno));
+            scanf("%d", &matricula);
+            r=consultaMatricula(a,tam,matricula);
 
-        case 1://Caso Aluno
-
-            printf("1 - CONSUTAR MATRICULA\n");
-            printf("2 - CONSULTAR SITUACAO ACADEMICA\n");
-            printf("3 - VISUALIZAR MEDIA\n");
-
-                scanf("%d", &comandoAluno);
-
-                    if(comandoAluno==1)
-                    {
-                        printf("Infome o numero da martricula:");
-                        scanf("%d", &matricula);
-
-                        if(procuraMatricula( a, tam, matricula)==1)
-                        {
-                            printf("Matricula encontrada!\n");
-                        } else
-                        {
-                            printf("Matricula nao encontrada!\n");
-                        }
-                    }
-                    if(comandoAluno==2)
-                    {
-                        printf("Infome o numero da martricula:");
-                        scanf("%d", &matricula);
-                        consultaMatricula(a, tam, matricula);
-                    }
-                    if(comandoAluno==3)
-                    {
-                        consultaMedia(&a);
-                    }
-
-
-
+                if(r==FALHA)
+                    printf("MATRICULA NAO ENCONTRADA, VOLTANDO PARA O MENU DE ENTRADA\n\n");
 
             break;
 
-        case 2://Caso Professor
+            case 2:
 
-            printf("1 - CADATRAR ALUNO\n");
-            printf("2 - REMOVER ALUNO\n");
-            printf("2 - REMOVER ALUNO\n");
+            printf("INFORME A OPERACAO QUE DESEJA FAZER\n1-CADASTRAR ALUNO\n2-REMOVER ALUNO\n3-MUDAR UM ALUNO DE DISCIPLINA\n");
 
-                scanf("%d", &comandoProfessor);
+            scanf("%d", &entrada);
 
-                    if(comandoProfessor==1)
+            switch(entrada)
+            {
+                case 1:
+
+                    aux=&a[tam];
+                    cadastrar(aux,tam,a);
+                    tam++;
+                    a=(Aluno*) realloc(a,(tam+2)*sizeof(Aluno));
+
+                break;
+
+                case 2:
+
+                printf("INFORME O NUMERO DE MATRICULA: ");
+                scanf("%d", &matricula);
+                r=removeAluno(a,matricula, tam);
+                    if(r==FALHA)
                     {
-                        cadastrar(a[tam], tam, a);
-                        tam++;
+                        printf("MATRICULA NAO ENCONTRADA, RETORNANDO AO MENU DE ENTRADA\n\n");
                     }
-                    if(comandoProfessor==2)
-                    {
-                        printf("Infome o numero da martricula:");
-                        scanf("%d", &matricula);
+                        if(r==SUCESSO)
+                        {
+                        tam--;
+                        a=(Aluno*) realloc(a,(tam+2)*sizeof(Aluno));
 
-                        removeAluno(&a, matricula, tam);
+                }
+                break;
 
-                    if(comandoProfessor==3)
-                    {
+                case 3:
 
-                    }
+                    alteraMateria(a,tam);
 
-            break;
+                break;
+
+                default:
+
+                    printf("OPERACAO NAO EXISTENTE, VOLTANDO AO MENU DE ENTRADA\n\n");
+
+                break;
+            }
+
         }
-    }
 
-        printf("\nFIM DE SESSAO\n");
+        printf("INFORME QUE TIPO DE USUARIO VOCE E OU SE DESEJA SAIR:\n1-ALUNO\n2-FUNCIONARIO DA INSTITUICAO DE ENSINO\n3-SAIR\n");
+        scanf("%d", &usuario);
+    }
+    salvaLista(a, tam);
+    free(a);
+
+     printf("\nFIM DE SESSAO\n");
         return 0;
 
 }
