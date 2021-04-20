@@ -22,6 +22,9 @@ typedef struct ALUNOS
     HORARIOS_MATERIAS dis_hr;
 }Aluno;
 
+void imprimiHorarios(Aluno a);
+void consultaMedia(Aluno a);
+
 int removeAluno(Aluno *a, int matricula, int tam)
 {
     int i, j, x, y, cod=0, aux=0, c=0;
