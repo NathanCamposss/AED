@@ -22,8 +22,48 @@ typedef struct ALUNOS
     HORARIOS_MATERIAS dis_hr;
 }Aluno;
 
-void imprimiHorarios(Aluno a);
+int removeAluno(Aluno *a, int matricula, int tam);
+
+void arrumaHorarios(Aluno *a, char mate[4]);
+
+void limpaHorario(Aluno *a);
+
+int procuraMatricula(Aluno a[], int tam, int matricula);
+
+int procuraNome(Aluno a[], int tam, char nome[50]);
+
+int procuraMateria( Aluno *a, int tam, char mat[4]);
+
+void cadastrar( Aluno *a, int tam, Aluno a1[tam]);
+
+void arrumaMedia(Aluno *a);
+
+void salvaLista(Aluno *a, int tam);
+
+void tamanho(int *tam);
+
+void pegaLista(Aluno *a, int *tam);
+
+void alteraMateria(Aluno *a, int tam);
+
+void imprimir(Aluno *a, int tam);
+
+int consultaMatricula(Aluno a[], int tam, int matricula);
+
 void consultaMedia(Aluno a);
+
+void imprimiHorarios(Aluno a);
+
+const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *text);
+
+
+
+/*================================================================================================
+==================================================================================================*/
+
+
+
+
 
 int removeAluno(Aluno *a, int matricula, int tam)
 {
@@ -46,7 +86,7 @@ int removeAluno(Aluno *a, int matricula, int tam)
                 
                 for(x=0;x<5;x++)
                 {
-                    strcpy(a[j].dis_hr.disciplina[x],a[j+1].dis_hr.disciplina);
+                    strcpy(a[j].dis_hr.disciplina[x],a[j+1].dis_hr.disciplina[x]);
                     for(y=0;y<4;y++)
                     {
                         strcpy(a[j].dis_hr.horarios[x][y],a[j+1].dis_hr.horarios[x][y]);
@@ -70,7 +110,7 @@ int removeAluno(Aluno *a, int matricula, int tam)
 
     }
 
-    if(cod=0)
+    if(cod==0)
     {
     return SUCESSO;
     }
