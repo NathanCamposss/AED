@@ -25,12 +25,23 @@ int main(void)
     //INTERRFACE
 
     Aluno *a, *aux;
-    int tam=0, entrada, usuario, matricula, r;
+    int tam=0, entrada, usuario, matricula, r, muda=0;
+    
     tamanho(&tam);
-
+    
+    if(tam!=0)
+    {
     a=(Aluno*) malloc((tam+2)*sizeof(Aluno));
-    pegaLista(a,&tam);
+    pegaLista(a,tam);
+    }
+    if(tam==0)
+    {
+        a=(Aluno*) malloc(2*sizeof(Aluno));
 
+    }
+    
+    //printf("%s\n", a[0].nome);
+    
     printf("ENTRAR COMO:\n1-DISCENTE\n2-ADMINISTRADOR DA PLATAFORMA\n3-SAIR\n");
     scanf("%d", &usuario);
 
@@ -41,7 +52,7 @@ int main(void)
         {
             case 1:
 
-            printf("INFORME A MATRICULA QUE DESEJA CONSULTAR: ");
+            printf("\nINFORME A MATRICULA QUE DESEJA CONSULTAR: ");
 
             scanf("%d", &matricula);
             r=consultaMatricula(a,tam,matricula);
@@ -53,7 +64,7 @@ int main(void)
 
             case 2:
 
-            printf("INFORME A OPERACAO QUE DESEJA FAZER\n1-CADASTRAR ALUNO\n2-REMOVER ALUNO\n3-MUDAR UM ALUNO DE DISCIPLINA\n");
+            printf("\nINFORME A OPERACAO QUE DESEJA FAZER\n1-CADASTRAR ALUNO\n2-REMOVER ALUNO\n3-MUDAR UM ALUNO DE DISCIPLINA\n4-ALTERAR MEDIA DE UM ALUNO\n5-VER LISTA DE TODOS OS ALUNOS DA INSTITUICAO\n");
 
             scanf("%d", &entrada);
 
@@ -61,8 +72,8 @@ int main(void)
             {
                 case 1:
 
-                    aux=&a[tam];
-                    cadastrar(aux,tam,a);
+                    //aux=&a[tam];
+                    cadastrar(a,tam,a);
                     tam++;
                     a=(Aluno*) realloc(a,(tam+2)*sizeof(Aluno));
 
@@ -70,7 +81,7 @@ int main(void)
 
                 case 2:
 
-                printf("INFORME O NUMERO DE MATRICULA: ");
+                printf("\nINFORME O NUMERO DE MATRICULA: ");
                 scanf("%d", &matricula);
                 r=removeAluno(a,matricula, tam);
                     if(r==FALHA)
@@ -79,6 +90,7 @@ int main(void)
                     }
                         if(r==SUCESSO)
                         {
+                        
                         tam--;
                         a=(Aluno*) realloc(a,(tam+2)*sizeof(Aluno));
 
@@ -87,8 +99,37 @@ int main(void)
 
                 case 3:
 
-                    alteraMateria(a,tam);
+                printf("\nINFORME O NUMERO DE MATRICULA: ");
+                scanf("%d", &matricula);
+                r=procuraMatricula(a,tam,matricula);
+                    if(r==FALHA)
+                    {
+                        printf("MATRICULA NAO ENCONTRADA, RETORNANDO AO MENU DE ENTRADA\n\n");
+                    }
 
+
+                    alteraMateria(a,tam,matricula);
+
+                break;
+
+                case 4:
+                printf("\nINFORME O NUMERO DE MATRICULA: ");
+                scanf("%d", &matricula);
+                r=procuraMatricula(a,tam,matricula);
+                if(r==FALHA)
+                {
+                    printf("\nMATRICULA NAO ENCONTRADA, VOLTANDO AO MENU PRINCIPAL\n");
+                }
+
+                if(r==SUCESSO)
+                {
+                    arrumaMedia(a,matricula);
+                }
+
+                break;
+
+                case 5:
+                imprimir(a,tam);
                 break;
 
                 default:
@@ -100,7 +141,7 @@ int main(void)
 
         }
 
-        printf("INFORME QUE TIPO DE USUARIO VOCE E OU SE DESEJA SAIR:\n1-ALUNO\n2-FUNCIONARIO DA INSTITUICAO DE ENSINO\n3-SAIR\n");
+        printf("\nINFORME QUE TIPO DE USUARIO VOCE E OU SE DESEJA SAIR:\n1-ALUNO\n2-ADMINISTRADOR DA PLATAFORMA\n3-SAIR\n");
         scanf("%d", &usuario);
     }
     salvaLista(a, tam);
