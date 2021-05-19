@@ -36,15 +36,15 @@ int procuraMateria( Aluno *a, int tam, char mat[4]);
 
 void cadastrar( Aluno *a, int tam, Aluno a1[tam]);
 
-void arrumaMedia(Aluno *a);
+void arrumaMedia(Aluno *a, int martricula);
 
 void salvaLista(Aluno *a, int tam);
 
 void tamanho(int *tam);
 
-void pegaLista(Aluno *a, int *tam);
+void pegaLista(Aluno *a, int tam);
 
-void alteraMateria(Aluno *a, int tam);
+void alteraMateria(Aluno *a, int tam, int matricula);
 
 void imprimir(Aluno *a, int tam);
 
@@ -69,12 +69,12 @@ int removeAluno(Aluno *a, int matricula, int tam)
 {
     int i, j, x, y, cod=0, aux=0, c=0;
     
-    for(i=0;i<tam;i++)
+    for(i=0;i<=tam;i++)
     {
         if(a[i].matricula==matricula)
         {
             c=1;
-            for(j=i;j<tam;j++)
+            for(j=i;j<=tam;j++)
             {
                 strcpy(a[j].nome,a[j+1].nome);
                 a[j].matricula=a[j+1].matricula;
@@ -101,7 +101,7 @@ int removeAluno(Aluno *a, int matricula, int tam)
     if(c==0)
     return FALHA;
 
-    for(i=0;i<tam;i++)
+    for(i=0;i<=tam;i++)
     {
         if(a[i].matricula==matricula)
         {
@@ -186,7 +186,10 @@ int procuraMatricula(Aluno a[], int tam, int matricula)
     for(i=0;i<tam;i++)
     {
         if(matricula==a[i].matricula)
+        {
+        
         return 1;
+        }
     }
     return 0;
 }
@@ -221,25 +224,31 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
     int mat,i,y, r=0, cod=1;
     char j[4];
     
-    printf("Informe o nome completo do aluno: ");
-    scanf(" %[^\n]s", a->nome);
-    r=procuraNome(a1,tam,a->nome);
+    printf("\nInforme o nome completo do aluno: ");
+    scanf(" %[^\n]s", a[tam].nome);
+    if(tam!=0)
+    {
+    r=procuraNome(a1,tam,a[tam].nome);
     while(r==1)
     {
         printf("Nome ja cadastrado, tente outro nome: ");
-        scanf(" %[^\n]s", a->nome);
-        r=procuraNome(a1,tam,a->nome);
+        scanf(" %[^\n]s", a[tam].nome);
+        r=procuraNome(a1,tam,a[tam].nome);
+    }
     }
     r=0;
 
     printf("Informe o numero de matricula: ");
-    scanf("%d", &a->matricula);
-     r=procuraMatricula(a1,tam,a->matricula);
+    scanf("%d", &a[tam].matricula);
+    if(tam!=0)
+    {
+     r=procuraMatricula(a,tam,a[tam].matricula);
      while(r==1)
     {
         printf("Matricula ja cadastrada, tente outro numero de matricula: ");
-        scanf(" %d", &a->matricula);
-        r=procuraMatricula(a1,tam,a->matricula);
+        scanf(" %d", &a[tam].matricula);
+        r=procuraMatricula(a,tam,a[tam].matricula);
+    }
     }
     printf("Informe em quantas das 5 materias o aluno esta cadastrado: ");
     scanf("%d", &mat);
@@ -251,7 +260,7 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
     limpaHorario(a);
     for(i=0;i<5;i++)
     {
-        strcpy(a->dis_hr.disciplina[i],"-");
+        strcpy(a[tam].dis_hr.disciplina[i],"-");
     }
     printf("\n");
     r=0;
@@ -261,17 +270,17 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
         
         printf("Informe qual a materia esta matriculado:\nAlgoritmo e Estrutura de Dados(AED)\nLogica Matematica(LM)\nProbabilidade e Estatistica(PE)\nArquitetura de Computadores(AC)\nAlgebra Linear(AL)\n");
         scanf(" %s", j);
-        r=procuraMateria(a,cod,j);
+        r=procuraMateria(&a[tam],cod,j);
         while((strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0) || r==1)
         {
-            printf("Valor invalido, tente novamente: ");
+            printf("Materia invalida, tente novamente: ");
             scanf(" %s", j);
-            r=procuraMateria(a,cod,j);
+            r=procuraMateria(&a[tam],cod,j);
 
         }
         printf("\n");
         cod++;
-        strcpy(a->dis_hr.disciplina[i],j);
+        strcpy(a[tam].dis_hr.disciplina[i],j);
         arrumaHorarios(a,j);
     }
     
@@ -279,48 +288,70 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 
     for(i=0;i<mat;i++)
     {
-        printf("Informe a media da materia de %s: ", a->dis_hr.disciplina[i]);
-        scanf("%lf", &a->media[i]);
-        if(a->media[i]<0 || a->media[i]>10)
+        printf("Informe a media da materia de %s: ", a[tam].dis_hr.disciplina[i]);
+        scanf("%lf", &a[tam].media[i]);
+        if(a[tam].media[i]<0 || a[tam].media[i]>10)
         {
             printf("Numero invalido, tente novamente: ");
-            scanf("%lf", &a->media[i]);
+            scanf("%lf", &a[tam].media[i]);
         }
     }
     if(mat<5)
     for(i=mat;i<5;i++)
     {
-        a->media[i]=-1;
+        a[tam].media[i]=-1;
     }
 
 }
 
-void arrumaMedia(Aluno *a)
+void arrumaMedia(Aluno *a, int matricula)
 {
     
-    int i=0, r;
+    int i=0, r, max=0, ind=0;
+    while(a[ind].matricula!=matricula)
+    {
+        if(a[ind].matricula!=matricula)
+        ind++;
+        
+    }
+    
     double d;
     printf("Informe o numero da disciplina cuja media precisa ser modificada\n");
-    while(i<5 || i<1)
+    while(i<5 || i>=0)
     {
-        printf("%d - %s\n",i+1,a->dis_hr.disciplina[i]);
+        printf("%d - %s\n",i+1,a[ind].dis_hr.disciplina[i]);
+        max++;
         i++;
-        if(strcmp(a->dis_hr.disciplina[i],"-")==0)
+        if(strcmp(a[ind].dis_hr.disciplina[i],"-")==0)
         break;
+        
     }
     scanf("%d", &r);
+    while(r>max || r<1)
+    {
+        printf("Numero invalido, tente novamente: ");
+        scanf("%d", &r);
+
+    }
     printf("Informe o valor da nova media: ");
     scanf("%lf", &d);
-    a->media[r-1]=d;
+    while(d<0 || d>10)
+    {
+        printf("Nota invalida, tente novamente: ");
+        scanf("%lf", &d);
+    }
+    a[ind].media[r-1]=d;
 }
 
 void salvaLista(Aluno *a, int tam)
 {
     int i, j;
     FILE *f;
+    
     f=fopen("Alunos.txt", "w");
     for(i=0;i<tam;i++)
     {
+        
         fprintf(f,"%s %d ", a[i].nome, a[i].matricula);
         for(j=0;j<5;j++)
         {
@@ -334,7 +365,9 @@ void salvaLista(Aluno *a, int tam)
                 fprintf(f,"%.2lf ", a[i].media[j]);
             }
         }
+        
         fprintf(f,"\n");
+        
     }
     fclose(f);
 }
@@ -360,7 +393,7 @@ void tamanho(int *tam)
     fclose(f);
 }
 
-void pegaLista(Aluno *a, int *tam)
+void pegaLista(Aluno *a, int tam)
 {
     FILE *f;
     
@@ -368,9 +401,9 @@ void pegaLista(Aluno *a, int *tam)
     int j, i=0, x, len, y;
     
     f=fopen("Alunos.txt","r");
-
     
-    for(i=0;i<*tam;i++)
+    
+    for(i=0;i<tam;i++)
     {
         for(y=0;y<5;y++)
         {
@@ -379,7 +412,7 @@ void pegaLista(Aluno *a, int *tam)
         }
     }
     
-    for(i=0;i<*tam;i++)
+    for(i=0;i<tam;i++)
     {
         strcpy(a[i].nome,"");
         while(1)
@@ -427,9 +460,10 @@ void pegaLista(Aluno *a, int *tam)
         }
         
         
+        
     }
     fclose(f);
-    for(i=0;i<*tam;i++)
+    for(i=0;i<tam;i++)
     {
         for(j=0;j<5;j++)
         {
@@ -441,7 +475,7 @@ void pegaLista(Aluno *a, int *tam)
     }
     Aluno *aux;
 
-    for(i=0;i<*tam;i++)
+    for(i=0;i<tam;i++)
     {
         aux=&a[i];
         for(j=0;j<5;j++)
@@ -459,19 +493,11 @@ void pegaLista(Aluno *a, int *tam)
     
 }
 
-void alteraMateria(Aluno *a, int tam)
+void alteraMateria(Aluno *a, int tam, int matr)
 {
-    int matr, r, i, ind, cod, tamM=0, resp;
+    int r, i, ind, cod, tamM=0, resp;
     char j[4];
-    printf("Informe a matricula do aluno a qual deseja modificar a lista de materias: ");
-    scanf("%d", &matr);
-    r=procuraMatricula(a, tam, matr);
-    while(r==0)
-    {
-        printf("Matricula nao encontrada, tente novamente: ");
-        scanf("%d", &matr);
-        r=procuraMatricula(a, tam, matr);
-    }
+    
     for(i=0;i<tam;i++)
     {
         if(a[i].matricula==matr)
@@ -515,7 +541,7 @@ void alteraMateria(Aluno *a, int tam)
         r=procuraMateria(&a[ind],tamM,j);
         while((strcmp(j,"AED")!=0 && strcmp(j,"LM")!=0 && strcmp(j,"AC")!=0 && strcmp(j,"PE")!=0 && strcmp(j,"AL")!=0) || r==1)
         {
-            printf("Valor invalido, tente novamente: ");
+            printf("Materia invalido, tente novamente: ");
             scanf(" %s", j);
             r=procuraMateria(&a[ind],tamM,j);
 
@@ -533,7 +559,7 @@ void alteraMateria(Aluno *a, int tam)
     {
         for(i=0;i<5;i++)
         {
-            if(a[ind].media[i]==-1)
+            if(a[ind].media[i]!=-1)
             tamM++;
         }
         if(tamM==5)
@@ -541,6 +567,7 @@ void alteraMateria(Aluno *a, int tam)
             printf("O aluno ja esta matriculado em todas as disciplinas, impossivel cadastrar em outra materia\n");
             return ;
         }
+        
         
         for(i=0;i<5;i++)
         {
@@ -556,6 +583,14 @@ void alteraMateria(Aluno *a, int tam)
                     r=procuraMateria(&a[ind],tamM,j);
 
                 }
+                printf("Informe a media da nova disciplina cadastrada: ");
+                scanf("%lf", &a[ind].media[i]);
+                while(a[ind].media[i]<0 || a[ind].media[i]>10)
+                {
+                    printf("Nota invalida, tente novamente: ");
+                    scanf("%lf", &a[ind].media[i]);
+
+                }
                 strcpy(a[ind].dis_hr.disciplina[tamM], j);
                 arrumaHorarios(a,a[ind].dis_hr.disciplina[tamM]);
                 break;
@@ -568,6 +603,7 @@ void alteraMateria(Aluno *a, int tam)
 void imprimir(Aluno *a, int tam)
 {
     int i, j, x;
+    printf("\n----------------------------------------------------\n");
     for(i=0;i<tam;i++)
     {
     printf("Nome: %s\nMatricula: %d\n",a[i].nome, a[i].matricula);
@@ -581,7 +617,7 @@ void imprimir(Aluno *a, int tam)
 
     }
 
-    imprimiHorarios(a[i]);
+    //imprimiHorarios(a[i]);
     printf("----------------------------------------------------\n");
 
     }
@@ -602,7 +638,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
     {
     return FALHA;
     }
-    printf("Informe o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
+    printf("\nInforme o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
     scanf("%d", &r);
     while(r<1 || r>4)
     {
@@ -618,12 +654,31 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
         }
         if(r==2)
         {
-            printf("Voce esta matriculado nas seguintes disciplinas:\n");
+            printf("\nVoce esta matriculado nas seguintes disciplinas:\n");
             for(i=0;i<5;i++)
             {
-                if(strcmp(a[ind].dis_hr.disciplina[i],"-")!=0)
+                if(strcmp(a[ind].dis_hr.disciplina[i],"AED")==0)
                 {
-                    printf("%s\n",a[ind].dis_hr.disciplina[i]);
+                    printf("Algoritmo e Estrutura de Dados\n");
+                }
+                if(strcmp(a[ind].dis_hr.disciplina[i],"AC")==0)
+                {
+                    printf("Arquitetura de Computadores\n");
+                }
+
+                if(strcmp(a[ind].dis_hr.disciplina[i],"LM")==0)
+                {
+                    printf("Logica Matematica\n");
+                }
+
+                if(strcmp(a[ind].dis_hr.disciplina[i],"AL")==0)
+                {
+                    printf("Algebra Linear\n");
+                }
+
+                if(strcmp(a[ind].dis_hr.disciplina[i],"PE")==0)
+                {
+                    printf("Probabilidade e Estatistica\n");
                 }
 
             }
@@ -634,13 +689,16 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
             imprimiHorarios(a[ind]);
 
         }
-        printf("Informe o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
+        
+        printf("\nInforme o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
         scanf("%d", &r);
         while(r<1 || r>4)
         {
         printf("Operacao invalida, tente novamente: ");
         scanf("%d", &r);
         }
+
+        
 
     }
     
@@ -649,7 +707,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
 void consultaMedia(Aluno a)
 {
     int i, r, x=0;
-    printf("Informe qual media deseja ver:\n");
+    printf("\nInforme qual media deseja ver:\n");
     for(i=0;i<5;i++)
     {
         if(strcmp(a.dis_hr.disciplina[i],"-")!=0)
@@ -671,7 +729,7 @@ void consultaMedia(Aluno a)
 void imprimiHorarios(Aluno a)
 {
     int x, j;
-    printf("Horarios:\n");
+    printf("\nHorarios:\n");
     for(j=0;j<5;j++)
     {
         if(j==0)
