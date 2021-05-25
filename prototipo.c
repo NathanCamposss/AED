@@ -126,9 +126,10 @@ int main(void)
                     {
                         printf("MATRICULA NAO ENCONTRADA, RETORNANDO AO MENU DE ENTRADA\n\n");
                     }
-
-
-                    alteraMateria(a,tam,matricula);
+                    if(r==SUCESSO)
+                    {
+                         alteraMateria(a,tam,matricula);
+                    }
 
                 break;
 
