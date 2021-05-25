@@ -10,8 +10,8 @@ typedef struct horarios_materias
 {
     char disciplina[5][4];
     char horarios[5][4][10];
-    
-    
+
+
 }HORARIOS_MATERIAS;
 
 typedef struct ALUNOS
@@ -21,6 +21,10 @@ typedef struct ALUNOS
     double media[5];
     HORARIOS_MATERIAS dis_hr;
 }Aluno;
+
+void limpaTela();
+
+int entradaDocente();
 
 int removeAluno(Aluno *a, int matricula, int tam);
 
@@ -63,12 +67,15 @@ const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *t
 
 
 
-
+void limpaTela()
+{
+    system("cls");
+}
 
 int removeAluno(Aluno *a, int matricula, int tam)
 {
     int i, j, x, y, cod=0, aux=0, c=0;
-    
+
     for(i=0;i<=tam;i++)
     {
         if(a[i].matricula==matricula)
@@ -83,17 +90,17 @@ int removeAluno(Aluno *a, int matricula, int tam)
                      a[j].media[x]=a[j+1].media[x];
 
                 }
-                
+
                 for(x=0;x<5;x++)
                 {
                     strcpy(a[j].dis_hr.disciplina[x],a[j+1].dis_hr.disciplina[x]);
                     for(y=0;y<4;y++)
                     {
                         strcpy(a[j].dis_hr.horarios[x][y],a[j+1].dis_hr.horarios[x][y]);
-                        
+
                     }
                 }
-                
+
             }
         }
 
@@ -118,7 +125,7 @@ int removeAluno(Aluno *a, int matricula, int tam)
     {
     return FALHA;
     }
-    
+
 }
 
 void arrumaHorarios(Aluno *a, char mate[4])
@@ -164,8 +171,8 @@ void arrumaHorarios(Aluno *a, char mate[4])
         strcpy(a->dis_hr.horarios[2][1],"19:35-PE");
 
     }
-    
-    
+
+
 }
 
 void limpaHorario(Aluno *a)
@@ -187,7 +194,7 @@ int procuraMatricula(Aluno a[], int tam, int matricula)
     {
         if(matricula==a[i].matricula)
         {
-        
+
         return 1;
         }
     }
@@ -220,10 +227,10 @@ int procuraMateria( Aluno *a, int tam, char mat[4])
 }
 void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 {
-    
+
     int mat,i,y, r=0, cod=1;
     char j[4];
-    
+
     printf("\nInforme o nome completo do aluno: ");
     scanf(" %[^\n]s", a[tam].nome);
     if(tam!=0)
@@ -267,7 +274,7 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 
     for(i=0;i<mat;i++)
     {
-        
+
         printf("Informe qual a materia esta matriculado:\nAlgoritmo e Estrutura de Dados(AED)\nLogica Matematica(LM)\nProbabilidade e Estatistica(PE)\nArquitetura de Computadores(AC)\nAlgebra Linear(AL)\n");
         scanf(" %s", j);
         r=procuraMateria(&a[tam],cod,j);
@@ -283,8 +290,8 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
         strcpy(a[tam].dis_hr.disciplina[i],j);
         arrumaHorarios(a,j);
     }
-    
-        
+
+
 
     for(i=0;i<mat;i++)
     {
@@ -306,15 +313,15 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
 
 void arrumaMedia(Aluno *a, int matricula)
 {
-    
+
     int i=0, r, max=0, ind=0;
     while(a[ind].matricula!=matricula)
     {
         if(a[ind].matricula!=matricula)
         ind++;
-        
+
     }
-    
+
     double d;
     printf("Informe o numero da disciplina cuja media precisa ser modificada\n");
     while(i<5 || i>=0)
@@ -324,7 +331,7 @@ void arrumaMedia(Aluno *a, int matricula)
         i++;
         if(strcmp(a[ind].dis_hr.disciplina[i],"-")==0)
         break;
-        
+
     }
     scanf("%d", &r);
     while(r>max || r<1)
@@ -347,11 +354,11 @@ void salvaLista(Aluno *a, int tam)
 {
     int i, j;
     FILE *f;
-    
+
     f=fopen("Alunos.txt", "w");
     for(i=0;i<tam;i++)
     {
-        
+
         fprintf(f,"%s %d ", a[i].nome, a[i].matricula);
         for(j=0;j<5;j++)
         {
@@ -365,9 +372,9 @@ void salvaLista(Aluno *a, int tam)
                 fprintf(f,"%.2lf ", a[i].media[j]);
             }
         }
-        
+
         fprintf(f,"\n");
-        
+
     }
     fclose(f);
 }
@@ -396,13 +403,13 @@ void tamanho(int *tam)
 void pegaLista(Aluno *a, int tam)
 {
     FILE *f;
-    
+
     char c, char_aux[100];
     int j, i=0, x, len, y;
-    
+
     f=fopen("Alunos.txt","r");
-    
-    
+
+
     for(i=0;i<tam;i++)
     {
         for(y=0;y<5;y++)
@@ -411,14 +418,14 @@ void pegaLista(Aluno *a, int tam)
             a[i].media[y]=-1;
         }
     }
-    
+
     for(i=0;i<tam;i++)
     {
         strcpy(a[i].nome,"");
         while(1)
         {
             fscanf(f," %s", char_aux);
-            
+
             if(isalpha(char_aux[0]))
             {
                 strcat(a[i].nome,char_aux);
@@ -458,9 +465,9 @@ void pegaLista(Aluno *a, int tam)
             }
 
         }
-        
-        
-        
+
+
+
     }
     fclose(f);
     for(i=0;i<tam;i++)
@@ -487,17 +494,17 @@ void pegaLista(Aluno *a, int tam)
         }
     }
 
-    
-    
 
-    
+
+
+
 }
 
 void alteraMateria(Aluno *a, int tam, int matr)
 {
     int r, i, ind, cod, tamM=0, resp;
     char j[4];
-    
+
     for(i=0;i<tam;i++)
     {
         if(a[i].matricula==matr)
@@ -525,10 +532,10 @@ void alteraMateria(Aluno *a, int tam, int matr)
             printf("%d - %s\n", i+1, a[ind].dis_hr.disciplina[i]);
             tamM++;
         }
-        
+
 
     }
-    
+
     scanf("%d", &resp);
     while(resp<=0 || resp>tamM)
     {
@@ -567,8 +574,8 @@ void alteraMateria(Aluno *a, int tam, int matr)
             printf("O aluno ja esta matriculado em todas as disciplinas, impossivel cadastrar em outra materia\n");
             return ;
         }
-        
-        
+
+
         for(i=0;i<5;i++)
         {
             if(a[ind].media[i]==-1)
@@ -650,7 +657,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
         if(r==1)
         {
             consultaMedia(a[ind]);
-            
+
         }
         if(r==2)
         {
@@ -689,7 +696,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
             imprimiHorarios(a[ind]);
 
         }
-        
+
         printf("\nInforme o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
         scanf("%d", &r);
         while(r<1 || r>4)
@@ -698,10 +705,10 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
         scanf("%d", &r);
         }
 
-        
+
 
     }
-    
+
 }
 
 void consultaMedia(Aluno a)
@@ -724,6 +731,15 @@ void consultaMedia(Aluno a)
     }
 
     printf("A sua media em %s e %.2lf\n",a.dis_hr.disciplina[r-1], a.media[r-1]);
+    if(a.media[r-1]<6)
+    {
+        printf("Situacao academica atual: REPROVADO\n");
+    }
+
+    else
+    {
+        printf("Situacao academica atual: APROVADO\n");
+    }
 }
 
 void imprimiHorarios(Aluno a)
@@ -750,7 +766,8 @@ void imprimiHorarios(Aluno a)
     }
 }
 
-const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *text){
+const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *text)
+{
     if (fieldWidth == 0 || field == NULL) return "";
 
     fieldWidth--;
@@ -759,4 +776,108 @@ const char *centralizarTexto(char *field, unsigned int fieldWidth, const char *t
     sprintf(field, "%*s%.*s%*s", padding, "", fieldWidth-1, text, padding>0 && len%2!=fieldWidth%2 ? padding-1 : padding, "");
 
     return (const char *)field;
+}
+
+int entradaDocente()
+{
+    char l1[10][3], l2[10][3], l3[10][3],a='a', b='z', c='A', d='Z', e='M', f='n';
+    char respos[3][7], escolha[7];
+    strcpy(escolha,"");
+
+    int i, j, r;
+    for(i=0;i<10;i++)
+    {
+        strcpy(l1[i],"");
+        strcpy(l2[i],"");
+        strcpy(l3[i],"");
+
+    }
+
+    for(i=0;i<10;i++)
+    {
+
+        l1[i][0]=a;
+        l1[i][1]=b;
+        l1[i][2]='\0';
+        a++;
+        b--;
+        l2[i][0]=d;
+        l2[i][1]=c;
+        l2[i][2]='\0';
+        c++;
+        d--;
+
+        l3[i][0]=e;
+        l3[i][1]=f;
+        l3[i][2]='\0';
+        f++;
+        e--;
+    }
+
+    strcpy(respos[0],l1[2]);
+    strcat(respos[0],l2[0]);
+    strcat(respos[0],l3[4]);
+
+    strcpy(respos[1],l1[5]);
+    strcat(respos[1],l2[7]);
+    strcat(respos[1],l3[1]);
+
+    strcpy(respos[2],l1[9]);
+    strcat(respos[2],l2[9]);
+    strcat(respos[2],l3[8]);
+
+    printf("PARA ENTRAR COMO ADM, SELECIONE AS PARTES DE SUA SENHA\nINFORME O NUMERO DA PRIMEIRA PARTE\n");
+    for(i=0;i<10;i++)
+    {
+        printf("%d - %s\n", i+1, l1[i]);
+
+    }
+    scanf("%d", &r);
+    if(r<1 || r>10)
+    {
+        printf("INVALIDO, ENTRADA NEGADA\n");
+        return FALHA;
+    }
+    strcat(escolha,l1[r-1]);
+    printf("\nINFORME A SEGUNDA PARTE\n");
+    for(i=0;i<10;i++)
+    {
+        printf("%d - %s\n", i+1, l2[i]);
+
+    }
+    scanf("%d", &r);
+    if(r<1 || r>10)
+    {
+        printf("INVALIDO, ENTRADA NEGADA\n");
+        return FALHA;
+    }
+    strcat(escolha,l2[r-1]);
+
+    printf("\nINFORME A TERCEIRA PARTE\n");
+    for(i=0;i<10;i++)
+    {
+        printf("%d - %s\n", i+1, l3[i]);
+
+    }
+    scanf("%d", &r);
+    if(r<1 || r>10)
+    {
+        printf("INVALIDO, ENTRADA NEGADA\n");
+        return FALHA;
+    }
+    strcat(escolha,l3[r-1]);
+
+    if(strcmp(escolha,respos[0])==0 || strcmp(escolha,respos[1])==0 || strcmp(escolha,respos[2])==0)
+    {
+        printf("ENTRADA PERMITIDA, ENTRANDO COMO ADM\n");
+        return SUCESSO;
+    }
+    else
+    {
+        printf("ENTRADA NEGADA, VOLTANDO AO MENU\n");
+        return FALHA;
+    }
+
+
+
 }
