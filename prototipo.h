@@ -264,7 +264,7 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
         printf("Valor invalido, tente novamente: ");
         scanf("%d", &mat);
     }
-    limpaHorario(a);
+    limpaHorario(&a[tam]);
     for(i=0;i<5;i++)
     {
         strcpy(a[tam].dis_hr.disciplina[i],"-");
@@ -288,7 +288,8 @@ void cadastrar( Aluno *a, int tam, Aluno a1[tam])
         printf("\n");
         cod++;
         strcpy(a[tam].dis_hr.disciplina[i],j);
-        arrumaHorarios(a,j);
+
+        arrumaHorarios(&a[tam],j);
     }
 
 
@@ -554,10 +555,10 @@ void alteraMateria(Aluno *a, int tam, int matr)
 
         }
         strcpy(a[ind].dis_hr.disciplina[resp-1], j);
-        limpaHorario(a);
+        limpaHorario(&a[ind]);
         for(i=0;i<tamM;i++)
         {
-            arrumaHorarios(a,a[ind].dis_hr.disciplina[i]);
+            arrumaHorarios(&a[ind],a[ind].dis_hr.disciplina[i]);
         }
         printf("Informe a media da nova materia: ");
         scanf("%lf", &a[ind].media[resp-1]);
@@ -599,7 +600,7 @@ void alteraMateria(Aluno *a, int tam, int matr)
 
                 }
                 strcpy(a[ind].dis_hr.disciplina[tamM], j);
-                arrumaHorarios(a,a[ind].dis_hr.disciplina[tamM]);
+                arrumaHorarios(&a[ind],a[ind].dis_hr.disciplina[tamM]);
                 break;
 
             }
