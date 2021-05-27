@@ -325,11 +325,10 @@ void arrumaMedia(Aluno *a, int matricula)
 
     double d;
     printf("Informe o numero da disciplina cuja media precisa ser modificada\n");
-    while(i<5 || i>=0)
+    for(i=0;i<5;i++)
     {
         printf("%d - %s\n",i+1,a[ind].dis_hr.disciplina[i]);
         max++;
-        i++;
         if(strcmp(a[ind].dis_hr.disciplina[i],"-")==0)
         break;
 
@@ -515,9 +514,9 @@ void alteraMateria(Aluno *a, int tam, int matr)
         }
 
     }
-    printf("Informe o que deseja fazer:\n1-Alterar o cadastro de uma das disciplinas e cadastrar em outra materia\n2-Se cadastrar em uma nova materia\n");
+    printf("Informe o que deseja fazer:\n1-Alterar o cadastro de uma das disciplinas e cadastrar em outra materia\n2-Se cadastrar em uma nova materia\n3-Cancelar a matricula de uma disciplina\n");
     scanf("%d", &cod);
-    while(cod!=2 && cod!=1)
+    while(cod!=2 && cod!=1 && cod!=3)
     {
         printf("Operacao invalida, tente novamente: ");
         scanf("%d", &cod);
@@ -536,6 +535,13 @@ void alteraMateria(Aluno *a, int tam, int matr)
 
 
     }
+    if(tamM==5)
+    {
+        printf("O aluno ja esta matriculado em todas as materias, retornando ao menu\n");
+        //return ;=====================================================
+    }
+    if(tamM!=5)
+    {
 
     scanf("%d", &resp);
     while(resp<=0 || resp>tamM)
@@ -562,6 +568,7 @@ void alteraMateria(Aluno *a, int tam, int matr)
         }
         printf("Informe a media da nova materia: ");
         scanf("%lf", &a[ind].media[resp-1]);
+    }
     }
     if(cod==2)
     {
@@ -606,6 +613,44 @@ void alteraMateria(Aluno *a, int tam, int matr)
             }
         }
     }
+    if(cod==3)
+    {
+        printf("Informe qual materia deseja retirar:\n");
+        for(i=0;i<5;i++)
+        {
+            if(a[ind].media[i]!=-1)
+            {
+                printf("%d - %s\n", i+1, a[ind].dis_hr.disciplina[i]);
+                tamM++;
+
+            }
+        }
+        scanf("%d", &resp);
+        while(resp<1 || resp>tamM)
+        {
+            printf("Operacao invalida, tente novamente: ");
+            scanf("%d", &resp);
+        }
+
+        for(i=(resp-1);i<5;i++)
+        {
+            if(i!=4)
+            {
+                a[ind].media[i]=a[ind].media[i+1];
+                strcpy(a[ind].dis_hr.disciplina[i],a[ind].dis_hr.disciplina[i+1]);
+            }
+            else
+            {
+                a[ind].media[4]=-1;
+                strcpy(a[ind].dis_hr.disciplina[4],"-");
+            }
+        }
+        limpaHorario(&a[ind]);
+        for(i=0;i<5;i++)
+        {
+            arrumaHorarios(&a[ind], a[ind].dis_hr.disciplina[i]);
+        }
+    }
 }
 
 void imprimir(Aluno *a, int tam)
@@ -646,6 +691,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
     {
     return FALHA;
     }
+    printf("\nBem vindo: %s", &a[ind].nome);
     printf("\nInforme o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
     scanf("%d", &r);
     while(r<1 || r>4)
