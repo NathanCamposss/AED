@@ -538,7 +538,7 @@ void alteraMateria(Aluno *a, int tam, int matr)
     if(tamM==5)
     {
         printf("O aluno ja esta matriculado em todas as materias, retornando ao menu\n");
-        //return ;=====================================================
+
     }
     if(tamM!=5)
     {
@@ -691,7 +691,7 @@ int consultaMatricula(Aluno a[], int tam, int matricula)
     {
     return FALHA;
     }
-    printf("\nBem vindo: %s", &a[ind].nome);
+    printf("\nBem vindo: %s", a[ind].nome);
     printf("\nInforme o que deseja consultar:\n1-Media\n2-Disciplinas\n3-Horarios\n4-Sair\n");
     scanf("%d", &r);
     while(r<1 || r>4)
